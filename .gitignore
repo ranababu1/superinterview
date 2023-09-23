@@ -64,3 +64,30 @@ yarn-error.log
 
 # testing
 /coverage
+# Dependency directories
+node_modules/
+
+# Platform-specific folders
+ios/build/
+android/app/build/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# IDE directories
+.idea/
+.vscode/
+
+# Miscellaneous
+.DS_Store
+*.log
+.env
+
+# Watchman configuration
+.watchmanconfig
+
+# Keystore
+*.keystore

@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useLayoutEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Picker} from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
@@ -151,6 +151,8 @@ const NodejsQuestions = ({navigation}: any) => {
         ))}
 
         {showExplanation && (
+          <ScrollView>
+
           <View style={styles.explanationContainer}>
             <Text style={styles.feedbackHeader}>
               {feedbackMessage && feedbackMessage.split('\n')[0]}
@@ -165,6 +167,7 @@ const NodejsQuestions = ({navigation}: any) => {
                   </Text>
                 ))}
           </View>
+          </ScrollView>
         )}
         {showWarning && (
           <Text style={styles.warningText}>Question not attempted</Text>
@@ -233,21 +236,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'hsla(238, 100%, 71%, 1)',
+    backgroundColor: '#1f2720',
   },
   mainContent: {
     flex: 1,
   },
   questionText: {
-    fontSize: 28,
+    fontSize: 26,
     marginTop: 30,
     marginBottom: 40,
-    color: 'white',
+    color: '#DEF358',
   },
   choiceButton: {
-    padding: 10,
+    padding: 7,
     marginVertical: 5,
-    backgroundColor: '#003366',
+    backgroundColor: '#353d36',
     borderRadius: 7,
   },
   choiceText: {
@@ -255,38 +258,38 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'left',
     paddingLeft: 10,
+    fontFamily: 'FiraCode-Light',
   },
   correctChoice: {
-    backgroundColor: 'green',
+    backgroundColor: '#2ecc71',
   },
   incorrectChoice: {
-    backgroundColor: 'orange',
+    backgroundColor: '#ff7675',
   },
   showExplanationButton: {
     padding: 10,
-    backgroundColor: '#003366',
+    backgroundColor: '#3A3E45',
     borderRadius: 5,
     marginTop: 30,
     alignItems: 'center',
     marginBottom: 10,
   },
-
   showExplanationText: {
-    color: 'white',
+    color: '#CECECE',
     fontSize: 20,
   },
-
   feedbackHeader: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 20,
-    color: '#003366',
+    fontSize: 18,
+    lineHeight: 24,
+    padding: 10,
+    color: '#CECECE',
   },
   explanationContainer: {
     padding: 10,
-    marginTop: 20,
-    borderRadius: 10,
-    backgroundColor: 'white',
+    marginTop: 30,
+    borderRadius: 30,
+    backgroundColor: '#353d36',
+    height: 150,
   },
   feedbackDetail: {
     fontSize: 18,
@@ -312,7 +315,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
-
   footerButton: {
     flex: 1,
     alignItems: 'center',

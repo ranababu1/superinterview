@@ -140,7 +140,7 @@ const NodejsQuestions = ({ navigation }: any) => {
         </View>
       ),
     });
-}, [navigation, currentQuestionIndex, questions.length, correctResponses]);
+  }, [navigation, currentQuestionIndex, questions.length, correctResponses]);
 
 
   if (isLoading) {
@@ -156,7 +156,7 @@ const NodejsQuestions = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.mainContent}>
-      <QuizQuestion question={currentQuestion.question} />
+        <QuizQuestion question={currentQuestion.question} />
 
         {currentQuestion.choices.map((choice, index) => (
           <TouchableOpacity
@@ -212,26 +212,6 @@ const NodejsQuestions = ({ navigation }: any) => {
 
       {/* Footer */}
       <View style={styles.footerContainer}>
-        <Picker
-          selectedValue={currentQuestionIndex}
-          style={styles.pickerContainer}
-          itemStyle={styles.pickerItem}
-          onValueChange={(itemValue, itemIndex) => {
-            setCurrentQuestionIndex(itemIndex);
-            setHasAnswered(false);
-            setFeedbackMessage('');
-            setShowExplanation(false);
-            setHideButton(false);
-          }}
-        >
-          {questions.map((_, index) => (
-            <Picker.Item
-              key={index}
-              label={`Q ${index + 1}`}
-              value={index}
-            />
-          ))}
-        </Picker>
 
         <TouchableOpacity
           style={styles.prevButton}
@@ -344,6 +324,30 @@ const styles = StyleSheet.create({
   },
   pickerItem: {
     color: 'white',
+  },
+  prevButton: {
+    backgroundColor: '#353d36',
+    padding: 5,
+    borderRadius: 5,
+    minWidth: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nextText: {
+    color: '#DEF358',
+    fontSize: 20,
+  },
+  nextButton: {
+    backgroundColor: '#353d36',
+    padding: 5,
+    borderRadius: 5,
+    minWidth: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  prevText: {
+    color: '#DEF358',
+    fontSize: 20,
   },
 });
 

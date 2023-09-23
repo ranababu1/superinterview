@@ -1,8 +1,9 @@
-import React, {useState, useEffect, useLayoutEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
+import QuizQuestion from '../../components/QuizQuestion';
 
 const ONE_HOUR = 3600000;
 
@@ -18,7 +19,7 @@ const fetchWithCache = async url => {
   // Try fetching data from cache
   const cachedData = await AsyncStorage.getItem(url);
   if (cachedData !== null) {
-    const {data, timestamp} = JSON.parse(cachedData);
+    const { data, timestamp } = JSON.parse(cachedData);
     // Check if data is younger than 1 hour
     if (Date.now() - timestamp < ONE_HOUR) {
       return data;
@@ -44,7 +45,7 @@ const fetchWithCache = async url => {
   }
 };
 
-const ReactjsQuestions = ({navigation}: any) => {
+const ReactjsQuestions = ({ navigation }: any) => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -109,9 +110,31 @@ const ReactjsQuestions = ({navigation}: any) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerTitle: () => (
+        <Picker
+          selectedValue={currentQuestionIndex}
+          style={styles.pickerContainer}
+          itemStyle={styles.pickerItem}
+          onValueChange={(itemValue, itemIndex) => {
+            setCurrentQuestionIndex(itemIndex);
+            setHasAnswered(false);
+            setFeedbackMessage('');
+            setShowExplanation(false);
+            setHideButton(false);
+          }}
+        >
+          {questions.map((_, index) => (
+            <Picker.Item
+              key={index}
+              label={`Q ${index + 1}`}
+              value={index}
+            />
+          ))}
+        </Picker>
+      ),
       headerRight: () => (
-        <View style={{marginRight: 10}}>
-          <Text style={{fontSize: 18, color: 'white'}}>
+        <View style={{ marginRight: 10 }}>
+          <Text style={{ fontSize: 18, color: 'white' }}>
             {currentQuestionIndex + 1}/{questions.length} - {correctResponses}
           </Text>
         </View>
@@ -119,9 +142,10 @@ const ReactjsQuestions = ({navigation}: any) => {
     });
   }, [navigation, currentQuestionIndex, questions.length, correctResponses]);
 
+
   if (isLoading) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Loader />
       </View>
     );
@@ -132,18 +156,19 @@ const ReactjsQuestions = ({navigation}: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.mainContent}>
-        <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        <QuizQuestion question={currentQuestion.question} />
+
         {currentQuestion.choices.map((choice, index) => (
           <TouchableOpacity
             key={index}
             style={[
               styles.choiceButton,
               selectedChoiceIndex === index &&
-              !currentQuestion.answer.includes(index)
+                !currentQuestion.answer.includes(index)
                 ? styles.incorrectChoice
                 : currentQuestion.answer.includes(index) && hasAnswered
-                ? styles.correctChoice
-                : null,
+                  ? styles.correctChoice
+                  : null,
             ]}
             onPress={() => !hasAnswered && handleAnswer(index)}>
             <Text style={styles.choiceText}>{choice}</Text>
@@ -151,7 +176,9 @@ const ReactjsQuestions = ({navigation}: any) => {
         ))}
 
         {showExplanation && (
-          <View style={styles.explanationContainer}>
+          <ScrollView
+            style={[styles.explanationContainer, { maxHeight: 150 }]} // Define a maxHeight
+          >
             <Text style={styles.feedbackHeader}>
               {feedbackMessage && feedbackMessage.split('\n')[0]}
             </Text>
@@ -164,8 +191,9 @@ const ReactjsQuestions = ({navigation}: any) => {
                     {line}
                   </Text>
                 ))}
-          </View>
+          </ScrollView>
         )}
+
         {showWarning && (
           <Text style={styles.warningText}>Question not attempted</Text>
         )}
@@ -184,24 +212,6 @@ const ReactjsQuestions = ({navigation}: any) => {
 
       {/* Footer */}
       <View style={styles.footerContainer}>
-        <Picker
-          selectedValue={currentQuestionIndex}
-          style={{width: 150}}
-          onValueChange={(itemValue, itemIndex) => {
-            setCurrentQuestionIndex(itemIndex);
-            setHasAnswered(false);
-            setFeedbackMessage('');
-            setShowExplanation(false);
-            setHideButton(false);
-          }}>
-          {questions.map((_, index) => (
-            <Picker.Item
-              key={index}
-              label={`JumpTo Q ${index + 1}`}
-              value={index}
-            />
-          ))}
-        </Picker>
 
         <TouchableOpacity
           style={styles.prevButton}
@@ -227,84 +237,68 @@ const ReactjsQuestions = ({navigation}: any) => {
 };
 
 const styles = StyleSheet.create({
-  text: {
-    fontFamily: 'Poppins-Regular',
-  },
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: 'hsla(238, 100%, 71%, 1)',
+    padding: 10,
+    backgroundColor: '#1f2720',
   },
   mainContent: {
     flex: 1,
   },
-  questionText: {
-    fontSize: 28,
-    marginTop: 30,
-    marginBottom: 40,
-    color: 'white',
-  },
   choiceButton: {
-    padding: 10,
+    padding: 7,
     marginVertical: 5,
-    backgroundColor: '#003366',
+    backgroundColor: '#353d36',
     borderRadius: 7,
   },
   choiceText: {
-    fontSize: 20,
+    fontSize: 18,
     color: 'white',
     textAlign: 'left',
     paddingLeft: 10,
+    fontFamily: 'FiraCode-Light',
   },
   correctChoice: {
-    backgroundColor: 'green',
+    backgroundColor: '#2ecc71',
   },
   incorrectChoice: {
-    backgroundColor: 'orange',
+    backgroundColor: '#ff7675',
   },
   showExplanationButton: {
     padding: 10,
-    backgroundColor: '#003366',
+    backgroundColor: '#3A3E45',
     borderRadius: 5,
     marginTop: 30,
     alignItems: 'center',
     marginBottom: 10,
   },
-
   showExplanationText: {
-    color: 'white',
+    color: '#CECECE',
     fontSize: 20,
-  },
-
-  feedbackHeader: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 20,
-    color: '#003366',
   },
   explanationContainer: {
     padding: 10,
-    marginTop: 20,
+    marginTop: 30,
     borderRadius: 10,
-    backgroundColor: 'white',
+    backgroundColor: '#353d36',
+  },
+  feedbackHeader: {
+    fontSize: 18,
+    lineHeight: 24,
+    padding: 10,
+    color: '#CECECE',
   },
   feedbackDetail: {
     fontSize: 18,
     textAlign: 'center',
     marginTop: 5,
     color: 'white',
+    padding: 10,
   },
   warningText: {
     color: 'red',
     alignSelf: 'center',
     marginBottom: 10,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    flexWrap: 'wrap',
   },
   footerContainer: {
     flexDirection: 'row',
@@ -312,39 +306,51 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
-
-  footerButton: {
-    flex: 1,
-    alignItems: 'center',
+  button: {
+    backgroundColor: '#353d36',
+    padding: 10,
+    borderRadius: 5,
     justifyContent: 'center',
-    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#DEF358',
+    fontSize: 20,
+  },
+  pickerContainer: {
+    width: 150,
+    color: 'white',
+    backgroundColor: 'transparent',
+  },
+  pickerItem: {
+    color: 'white',
   },
   prevButton: {
-    backgroundColor: '#002244',
-    padding: 10,
+    backgroundColor: '#353d36',
+    padding: 5,
     borderRadius: 5,
     minWidth: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
   },
   nextText: {
-    color: 'white',
+    color: '#DEF358',
     fontSize: 20,
   },
   nextButton: {
-    backgroundColor: '#002244',
-    padding: 10,
+    backgroundColor: '#353d36',
+    padding: 5,
     borderRadius: 5,
     minWidth: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
   },
   prevText: {
-    color: 'white',
+    color: '#DEF358',
     fontSize: 20,
   },
 });
+
+
 
 export default ReactjsQuestions;

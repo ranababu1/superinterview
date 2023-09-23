@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useLayoutEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
 
 const ONE_HOUR = 3600000;
@@ -18,7 +18,7 @@ const fetchWithCache = async url => {
   // Try fetching data from cache
   const cachedData = await AsyncStorage.getItem(url);
   if (cachedData !== null) {
-    const {data, timestamp} = JSON.parse(cachedData);
+    const { data, timestamp } = JSON.parse(cachedData);
     // Check if data is younger than 1 hour
     if (Date.now() - timestamp < ONE_HOUR) {
       return data;
@@ -44,7 +44,7 @@ const fetchWithCache = async url => {
   }
 };
 
-const NodejsQuestions = ({navigation}: any) => {
+const NodejsQuestions = ({ navigation }: any) => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -110,8 +110,8 @@ const NodejsQuestions = ({navigation}: any) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <View style={{marginRight: 10}}>
-          <Text style={{fontSize: 18, color: 'white'}}>
+        <View style={{ marginRight: 10 }}>
+          <Text style={{ fontSize: 18, color: 'white' }}>
             {currentQuestionIndex + 1}/{questions.length} - {correctResponses}
           </Text>
         </View>
@@ -121,7 +121,7 @@ const NodejsQuestions = ({navigation}: any) => {
 
   if (isLoading) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Loader />
       </View>
     );
@@ -132,18 +132,21 @@ const NodejsQuestions = ({navigation}: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.mainContent}>
-        <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        <ScrollView style={styles.questionContainer}>
+
+          <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        </ScrollView>
         {currentQuestion.choices.map((choice, index) => (
           <TouchableOpacity
             key={index}
             style={[
               styles.choiceButton,
               selectedChoiceIndex === index &&
-              !currentQuestion.answer.includes(index)
+                !currentQuestion.answer.includes(index)
                 ? styles.incorrectChoice
                 : currentQuestion.answer.includes(index) && hasAnswered
-                ? styles.correctChoice
-                : null,
+                  ? styles.correctChoice
+                  : null,
             ]}
             onPress={() => !hasAnswered && handleAnswer(index)}>
             <Text style={styles.choiceText}>{choice}</Text>
@@ -151,9 +154,9 @@ const NodejsQuestions = ({navigation}: any) => {
         ))}
 
         {showExplanation && (
-          <ScrollView>
-
-          <View style={styles.explanationContainer}>
+          <ScrollView
+            style={[styles.explanationContainer, { maxHeight: 150 }]} // Define a maxHeight
+          >
             <Text style={styles.feedbackHeader}>
               {feedbackMessage && feedbackMessage.split('\n')[0]}
             </Text>
@@ -166,9 +169,9 @@ const NodejsQuestions = ({navigation}: any) => {
                     {line}
                   </Text>
                 ))}
-          </View>
           </ScrollView>
         )}
+
         {showWarning && (
           <Text style={styles.warningText}>Question not attempted</Text>
         )}
@@ -189,18 +192,20 @@ const NodejsQuestions = ({navigation}: any) => {
       <View style={styles.footerContainer}>
         <Picker
           selectedValue={currentQuestionIndex}
-          style={{width: 150}}
+          style={styles.pickerContainer}
+          itemStyle={styles.pickerItem}
           onValueChange={(itemValue, itemIndex) => {
             setCurrentQuestionIndex(itemIndex);
             setHasAnswered(false);
             setFeedbackMessage('');
             setShowExplanation(false);
             setHideButton(false);
-          }}>
+          }}
+        >
           {questions.map((_, index) => (
             <Picker.Item
               key={index}
-              label={`JumpTo Q ${index + 1}`}
+              label={`Q ${index + 1}`}
               value={index}
             />
           ))}
@@ -235,17 +240,23 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     backgroundColor: '#1f2720',
   },
   mainContent: {
     flex: 1,
   },
-  questionText: {
-    fontSize: 26,
-    marginTop: 30,
+  questionContainer: {
+    maxHeight: 130,
+    borderRadius: 10,
+    backgroundColor: '#353d36',
     marginBottom: 40,
+  },
+
+  questionText: {
+    fontSize: 22,
     color: '#DEF358',
+    padding: 10,
   },
   choiceButton: {
     padding: 7,
@@ -254,7 +265,7 @@ const styles = StyleSheet.create({
     borderRadius: 7,
   },
   choiceText: {
-    fontSize: 20,
+    fontSize: 18,
     color: 'white',
     textAlign: 'left',
     paddingLeft: 10,
@@ -296,6 +307,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
     color: 'white',
+    padding: 10,
   },
   warningText: {
     color: 'red',
@@ -321,8 +333,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 20,
   },
+  pickerContainer: {
+    backgroundColor: '#353d36',
+    height: 50,
+    width: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    padding: 10,
+  },
+  pickerItem: {
+    color: 'white',
+  },
+  pickerStyle: {
+    minWidth: 100,
+    backgroundColor: '#353d36',
+    borderRadius: 5,
+    justifyContent: 'center',
+  },
+  pickerItemStyle: {
+    color: 'white',
+  },
   prevButton: {
-    backgroundColor: '#002244',
+    backgroundColor: '#353d36',
     padding: 10,
     borderRadius: 5,
     minWidth: 100,
@@ -331,11 +364,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   nextText: {
-    color: 'white',
+    color: '#DEF358',
     fontSize: 20,
   },
   nextButton: {
-    backgroundColor: '#002244',
+    backgroundColor: '#353d36',
     padding: 10,
     borderRadius: 5,
     minWidth: 100,
@@ -344,7 +377,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   prevText: {
-    color: 'white',
+    color: '#DEF358',
     fontSize: 20,
   },
 });

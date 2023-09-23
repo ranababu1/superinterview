@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
+import QuizQuestion from '../../components/QuizQuestion';
 
 const ONE_HOUR = 3600000;
 
@@ -109,6 +110,28 @@ const NodejsQuestions = ({ navigation }: any) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerTitle: () => (
+        <Picker
+          selectedValue={currentQuestionIndex}
+          style={styles.pickerContainer}
+          itemStyle={styles.pickerItem}
+          onValueChange={(itemValue, itemIndex) => {
+            setCurrentQuestionIndex(itemIndex);
+            setHasAnswered(false);
+            setFeedbackMessage('');
+            setShowExplanation(false);
+            setHideButton(false);
+          }}
+        >
+          {questions.map((_, index) => (
+            <Picker.Item
+              key={index}
+              label={`Q ${index + 1}`}
+              value={index}
+            />
+          ))}
+        </Picker>
+      ),
       headerRight: () => (
         <View style={{ marginRight: 10 }}>
           <Text style={{ fontSize: 18, color: 'white' }}>
@@ -117,7 +140,8 @@ const NodejsQuestions = ({ navigation }: any) => {
         </View>
       ),
     });
-  }, [navigation, currentQuestionIndex, questions.length, correctResponses]);
+}, [navigation, currentQuestionIndex, questions.length, correctResponses]);
+
 
   if (isLoading) {
     return (
@@ -132,10 +156,8 @@ const NodejsQuestions = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <View style={styles.mainContent}>
-        <ScrollView style={styles.questionContainer}>
+      <QuizQuestion question={currentQuestion.question} />
 
-          <Text style={styles.questionText}>{currentQuestion.question}</Text>
-        </ScrollView>
         {currentQuestion.choices.map((choice, index) => (
           <TouchableOpacity
             key={index}
@@ -235,9 +257,6 @@ const NodejsQuestions = ({ navigation }: any) => {
 };
 
 const styles = StyleSheet.create({
-  text: {
-    fontFamily: 'Poppins-Regular',
-  },
   container: {
     flex: 1,
     padding: 10,
@@ -245,18 +264,6 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-  },
-  questionContainer: {
-    maxHeight: 130,
-    borderRadius: 10,
-    backgroundColor: '#353d36',
-    marginBottom: 40,
-  },
-
-  questionText: {
-    fontSize: 22,
-    color: '#DEF358',
-    padding: 10,
   },
   choiceButton: {
     padding: 7,
@@ -289,18 +296,17 @@ const styles = StyleSheet.create({
     color: '#CECECE',
     fontSize: 20,
   },
+  explanationContainer: {
+    padding: 10,
+    marginTop: 30,
+    borderRadius: 10,
+    backgroundColor: '#353d36',
+  },
   feedbackHeader: {
     fontSize: 18,
     lineHeight: 24,
     padding: 10,
     color: '#CECECE',
-  },
-  explanationContainer: {
-    padding: 10,
-    marginTop: 30,
-    borderRadius: 30,
-    backgroundColor: '#353d36',
-    height: 150,
   },
   feedbackDetail: {
     fontSize: 18,
@@ -314,72 +320,33 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 10,
   },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    flexWrap: 'wrap',
-  },
   footerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
   },
-  footerButton: {
-    flex: 1,
-    alignItems: 'center',
+  button: {
+    backgroundColor: '#353d36',
+    padding: 10,
+    borderRadius: 5,
     justifyContent: 'center',
-    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#DEF358',
+    fontSize: 20,
   },
   pickerContainer: {
-    backgroundColor: '#353d36',
-    height: 50,
     width: 150,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    padding: 10,
+    color: 'white',
+    backgroundColor: 'transparent',
   },
   pickerItem: {
     color: 'white',
   },
-  pickerStyle: {
-    minWidth: 100,
-    backgroundColor: '#353d36',
-    borderRadius: 5,
-    justifyContent: 'center',
-  },
-  pickerItemStyle: {
-    color: 'white',
-  },
-  prevButton: {
-    backgroundColor: '#353d36',
-    padding: 10,
-    borderRadius: 5,
-    minWidth: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  nextText: {
-    color: '#DEF358',
-    fontSize: 20,
-  },
-  nextButton: {
-    backgroundColor: '#353d36',
-    padding: 10,
-    borderRadius: 5,
-    minWidth: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 10,
-  },
-  prevText: {
-    color: '#DEF358',
-    fontSize: 20,
-  },
 });
+
+
 
 export default NodejsQuestions;

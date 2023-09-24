@@ -1,23 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../../components/Loader';
+
+const ONE_HOUR = 60 * 60 * 1000;
+
+const fetchWithCache = async (url) => {
+  const cachedData = await AsyncStorage.getItem(url);
+  if (cachedData !== null) {
+    const { data, timestamp } = JSON.parse(cachedData);
+    if (Date.now() - timestamp < ONE_HOUR) {
+      return data;
+    }
+  }
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    await AsyncStorage.setItem(
+      url,
+      JSON.stringify({
+        data: data,
+        timestamp: Date.now(),
+      })
+    );
+    return data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
 
 const JavascriptAdvanced = () => {
   const [selectedTopic, setSelectedTopic] = useState(null);
-  const [topics, setTopics] = useState([]); // State variable to hold fetched topics
-  
+  const [topics, setTopics] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
-    const fetchTopics = async () => {
-      try {
-        let response = await fetch('https://imrn.dev/api/jsRefresher');
-        let data = await response.json();
+    fetchWithCache('https://imrn.dev/api/jsRefresher')
+      .then(data => {
         setTopics(data);
-      } catch (error) {
+        setIsLoading(false);
+      })
+      .catch(error => {
         console.error('Error fetching data from API:', error);
-      }
-    };
-    fetchTopics();
+        setIsLoading(false);
+      });
   }, []);
-  
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1 }}>
+        <Loader />
+      </View>
+    );
+  }
+
   if (selectedTopic) {
     return (
       <View style={styles.container}>
@@ -36,7 +73,8 @@ const JavascriptAdvanced = () => {
         <TouchableOpacity
           key={index}
           style={styles.listButton}
-          onPress={() => setSelectedTopic(topic)}>
+          onPress={() => setSelectedTopic(topic)}
+        >
           <Text style={styles.listText}>{topic.topic}</Text>
         </TouchableOpacity>
       ))}
@@ -83,6 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#353d36',
     borderRadius: 5,
+    marginTop: 50,
     padding: 10,
   },
 });

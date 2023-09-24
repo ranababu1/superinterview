@@ -178,7 +178,7 @@ const NodejsQuestions = ({ navigation }: any) => {
 
           {showExplanation && (
             <ScrollView
-              style={[styles.explanationContainer, { maxHeight: 150 }]} // Define a maxHeight
+              style={styles.explanationContainer} // Define a maxHeight
             >
               <Text style={styles.feedbackHeader}>
                 {feedbackMessage && feedbackMessage.split('\n')[0]}
@@ -283,15 +283,18 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 10,
     backgroundColor: '#353d36',
+    maxHeight: 120,
+    
   },
   feedbackHeader: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 16,
-    lineHeight: 24,
+
+    fontSize: 14,
+    lineHeight: 22,
     padding: 10,
     color: '#CECECE',
+    
   },
-
   warningText: {
     color: 'red',
     alignSelf: 'center',

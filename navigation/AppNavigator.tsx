@@ -20,7 +20,7 @@ function AppNavigator() {
         initialRouteName="Home"
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#222327',
+            backgroundColor: '#1f2720',
             shadowOpacity: 0, // This removes the shadow on iOS
             elevation: 0, // This removes the shadow on Android
           },

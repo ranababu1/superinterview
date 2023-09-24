@@ -18,6 +18,8 @@
 		8EEC540CBBB841F5BEE89409 /* Poppins-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6FB8E7081B2A4B7C9F8D4EB7 /* Poppins-Bold.ttf */; };
 		12E9B86BF9C54D5FB8C99DB2 /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 022E19855C8A457B9C882770 /* Poppins-Light.ttf */; };
 		F5C777CDF72840DC99693DB4 /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EBCDA976B82F483B900B4A4D /* Poppins-Regular.ttf */; };
+		76FA65FCD27F4B59BB643084 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6B30D1DFF9A94024A98BA7E4 /* Montserrat-Regular.ttf */; };
+		F99DA6DD2AE44094850523F5 /* ShadowsIntoLight-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 350F40EF6A9A4EA685D48760 /* ShadowsIntoLight-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,8 @@
 		6FB8E7081B2A4B7C9F8D4EB7 /* Poppins-Bold.ttf */ = {isa = PBXFileReference; name = "Poppins-Bold.ttf"; path = "../assets/fonts/Poppins-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		022E19855C8A457B9C882770 /* Poppins-Light.ttf */ = {isa = PBXFileReference; name = "Poppins-Light.ttf"; path = "../assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		EBCDA976B82F483B900B4A4D /* Poppins-Regular.ttf */ = {isa = PBXFileReference; name = "Poppins-Regular.ttf"; path = "../assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6B30D1DFF9A94024A98BA7E4 /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; name = "Montserrat-Regular.ttf"; path = "../assets/fonts/Montserrat-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		350F40EF6A9A4EA685D48760 /* ShadowsIntoLight-Regular.ttf */ = {isa = PBXFileReference; name = "ShadowsIntoLight-Regular.ttf"; path = "../assets/fonts/ShadowsIntoLight-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +168,8 @@
 				6FB8E7081B2A4B7C9F8D4EB7 /* Poppins-Bold.ttf */,
 				022E19855C8A457B9C882770 /* Poppins-Light.ttf */,
 				EBCDA976B82F483B900B4A4D /* Poppins-Regular.ttf */,
+				6B30D1DFF9A94024A98BA7E4 /* Montserrat-Regular.ttf */,
+				350F40EF6A9A4EA685D48760 /* ShadowsIntoLight-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -269,6 +275,8 @@
 				8EEC540CBBB841F5BEE89409 /* Poppins-Bold.ttf in Resources */,
 				12E9B86BF9C54D5FB8C99DB2 /* Poppins-Light.ttf in Resources */,
 				F5C777CDF72840DC99693DB4 /* Poppins-Regular.ttf in Resources */,
+				76FA65FCD27F4B59BB643084 /* Montserrat-Regular.ttf in Resources */,
+				F99DA6DD2AE44094850523F5 /* ShadowsIntoLight-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

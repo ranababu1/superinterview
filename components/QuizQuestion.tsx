@@ -15,7 +15,7 @@ const QuizQuestion: React.FC<QuestionProps> = ({ question }) => {
 
 const styles = StyleSheet.create({
   questionContainer: {
-    maxHeight: 130,
+    maxHeight: 120,
     borderRadius: 10,
     backgroundColor: '#353d36',
     marginBottom: 40,

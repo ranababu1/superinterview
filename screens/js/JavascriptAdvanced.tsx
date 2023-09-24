@@ -58,9 +58,11 @@ const JavascriptAdvanced = () => {
   if (selectedTopic) {
     return (
       <View style={styles.container}>
-        <ScrollView style={styles.mainContent}>
+        <ScrollView style={[styles.mainContent, styles.descContainer]}>
           <Text style={styles.contentTitle}>{selectedTopic.topic}</Text>
           <Text style={styles.content}>{selectedTopic.description}</Text>
+        </ScrollView>
+        <ScrollView style={styles.mainContent}>
           <Text style={styles.codeBlock}>{selectedTopic.code_example}</Text>
         </ScrollView>
       </View>
@@ -106,8 +108,9 @@ const styles = StyleSheet.create({
   },
   contentTitle: {
     fontFamily: 'Poppins-Bold',
+    
     color: 'white',
-    fontSize: 22,
+    fontSize: 24,
     marginBottom: 10,
   },
   content: {
@@ -121,9 +124,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#353d36',
     borderRadius: 5,
-    marginTop: 50,
+    marginTop: 30,
     padding: 10,
   },
+  descContainer: {
+    borderRadius: 10,
+    backgroundColor: '#353d36',
+    marginBottom: 20,
+    padding: 20,
+  },
+
 });
 
 export default JavascriptAdvanced;

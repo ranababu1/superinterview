@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#222327',
+    backgroundColor: '#1f2720',
   },
   image: {
     width: '90%',
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '90%',
     borderRadius: 10,
-    backgroundColor: '#3B3E45',
+    backgroundColor: '#353d36',
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 30,
+    fontSize: 24,
     textAlign: 'center',
     color: '#cecece',
   },

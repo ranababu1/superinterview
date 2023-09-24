@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   questionText: {
-    fontSize: 22,
+    fontFamily: 'Poppins-Regular',
+    fontSize: 20,
     color: '#DEF358',
     padding: 10,
   },

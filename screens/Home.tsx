@@ -62,10 +62,11 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 1,
     marginBottom: 20,
-    padding: 20,
+    padding: 10,
   },
 
   title: {
+    fontFamily: 'Poppins-Regular',
     fontSize: 30,
     textAlign: 'center',
     color: '#cecece',

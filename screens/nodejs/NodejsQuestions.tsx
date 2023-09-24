@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated, Easing } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
@@ -58,8 +58,7 @@ const NodejsQuestions = ({ navigation }: any) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [hideButton, setHideButton] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  const [animation, setAnimation] = useState(new Animated.Value(0));
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+
 
   useEffect(() => {
     fetchWithCache('https://imrn.dev/api/nodejs')
@@ -75,18 +74,6 @@ const NodejsQuestions = ({ navigation }: any) => {
         setIsLoading(false);
       });
   }, []);
-
-  useEffect(() => {
-        fadeAnim.setValue(0);
-
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      easing: Easing.ease,
-      useNativeDriver: true,
-    }).start();
-  }, [currentQuestionIndex, fadeAnim]);
-  
 
   const handleAnswer = (selectedAnswerIndex: number) => {
     setSelectedChoiceIndex(selectedAnswerIndex);
@@ -168,8 +155,6 @@ const NodejsQuestions = ({ navigation }: any) => {
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
-
     <View style={styles.container}>
         <View style={styles.mainContent}>
           <QuizQuestion question={currentQuestion.question} />
@@ -249,7 +234,6 @@ const NodejsQuestions = ({ navigation }: any) => {
           </TouchableOpacity>
         </View>
       </View>
-    </Animated.View>
   );
 };
 
@@ -273,7 +257,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'left',
     paddingLeft: 10,
-    fontFamily: 'FiraCode-Light',
+    fontFamily: 'FiraCode-Medium',
   },
   correctChoice: {
     backgroundColor: '#2ecc71',
@@ -282,6 +266,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff7675',
   },
   showExplanationButton: {
+    fontFamily: 'Poppins-Regular',
     padding: 10,
     backgroundColor: '#3A3E45',
     borderRadius: 5,
@@ -300,18 +285,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#353d36',
   },
   feedbackHeader: {
-    fontSize: 18,
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
     lineHeight: 24,
     padding: 10,
     color: '#CECECE',
   },
-  feedbackDetail: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 5,
-    color: 'white',
-    padding: 10,
-  },
+
   warningText: {
     color: 'red',
     alignSelf: 'center',
@@ -346,11 +326,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#353d36',
     padding: 5,
     borderRadius: 5,
-    minWidth: 100,
+    minWidth: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
   nextText: {
+    fontFamily: 'Poppins-Bold',
     color: '#DEF358',
     fontSize: 20,
   },
@@ -358,11 +339,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#353d36',
     padding: 5,
     borderRadius: 5,
-    minWidth: 100,
+    minWidth: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
   prevText: {
+    fontFamily: 'Poppins-Bold',
     color: '#DEF358',
     fontSize: 20,
   },

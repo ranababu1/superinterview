@@ -3,13 +3,13 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import Home from '../screens/Home';
-import JavascriptQuestions from '../screens/js/JavascriptQuestions';
 import ReactjsQuestions from '../screens/reactjs/ReactjsQuestions';
 import NodejsQuestions from '../screens/nodejs/NodejsQuestions';
 import Typescript from '../screens/typescript/TypescriptQuestions';
 import JavascriptOptions from '../screens/js/JavascriptOptions';
-import JavascriptBasic from '../screens/js/JavascriptBasic';
 import JavascriptAdvanced from '../screens/js/JavascriptAdvanced';
+import JavascriptQuestions from '../screens/js/JavascriptQuestions';
+
 
 const Stack = createStackNavigator();
 
@@ -33,38 +33,34 @@ function AppNavigator() {
         <Stack.Screen
           name="JavascriptQuestions"
           component={JavascriptQuestions}
-          options={{title: 'Javascript Quiz'}}
+          options={{title: ''}}
         />
         <Stack.Screen
           name="ReactjsQuestions"
           component={ReactjsQuestions}
-          options={{title: 'Reactjs Quiz'}}
+          options={{title: ''}}
         />
         <Stack.Screen
           name="NodejsQuestions"
           component={NodejsQuestions}
-          options={{title: 'Nodejs Quiz'}}
+          options={{title: ''}}
         />
         <Stack.Screen
           name="Typescript"
           component={Typescript}
-          options={{title: 'Typescript Quiz'}}
+          options={{title: ''}}
         />
         <Stack.Screen
           name="JavascriptOptions"
           component={JavascriptOptions}
-          options={{title: 'Javascript Options'}}
+          options={{title: ''}}
         />
 
-        <Stack.Screen
-          name="Basic"
-          component={JavascriptBasic}
-          options={{title: 'Basic Refresher'}}
-        />
+
         <Stack.Screen
           name="Advanced"
           component={JavascriptAdvanced}
-          options={{title: 'Advanced Refresher'}}
+          options={{title: ''}}
         />
       </Stack.Navigator>
     </NavigationContainer>

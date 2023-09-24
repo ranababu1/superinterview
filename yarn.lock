@@ -5992,7 +5992,7 @@
   dependencies:
     "ramda" "^0.27.0"
 
-"react-native-reanimated@^3.5.2":
+"react-native-reanimated@^3.5.4":
   "integrity" "sha512-8we9LLDO1o4Oj9/DICeEJ2K1tjfqkJagqQUglxeUAkol/HcEJ6PGxIrpBcNryLqCDYEcu6FZWld/FzizBIw6bg=="
   "resolved" "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.5.4.tgz"
   "version" "3.5.4"

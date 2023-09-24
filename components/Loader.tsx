@@ -1,56 +1,52 @@
-import React, {useRef, useEffect} from 'react';
-import {View, StyleSheet, Animated} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Animated } from 'react-native';
 
 const Loader = () => {
-  const scaleAnim = useRef(new Animated.Value(0)).current;
-  const opacityAnim = useRef(new Animated.Value(1)).current;
+  const [animations, setAnimations] = useState([]);
+  const barCount = 3;
 
   useEffect(() => {
-    const scaleIn = Animated.timing(scaleAnim, {
-      toValue: 1,
-      duration: 2000,
-      useNativeDriver: true,
-    });
+    const newAnimations = [];
+    for (let i = 0; i < barCount; i++) {
+      const scaleY = new Animated.Value(1);
+      newAnimations.push(scaleY);
+    }
+    setAnimations(newAnimations);
+  }, []);
 
-    const fadeInOut = Animated.sequence([
-      Animated.timing(opacityAnim, {
-        toValue: 0,
-        duration: 2000,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 0,
-        useNativeDriver: true,
-      }),
-    ]);
-
-    Animated.loop(
-      Animated.parallel([scaleIn, fadeInOut], {stopTogether: false}),
-    ).start();
-  }, [scaleAnim, opacityAnim]);
+  useEffect(() => {
+    if (animations.length === barCount) {
+      animations.forEach((anim, index) => {
+        Animated.loop(
+          Animated.sequence([
+            Animated.delay(index * 120), // Reduced delay for faster animation
+            Animated.timing(anim, {
+              toValue: 1.5, // Increased toValue for more animation
+              duration: 300, // Reduced duration for faster animation
+              useNativeDriver: true,
+            }),
+            Animated.timing(anim, {
+              toValue: 1,
+              duration: 300, // Reduced duration for faster animation
+              useNativeDriver: true,
+            }),
+          ]),
+        ).start();
+      });
+    }
+  }, [animations]);
 
   return (
     <View style={styles.centeredContainer}>
-      <Animated.View
-        style={[
-          styles.loader,
-          {
-            transform: [{scale: scaleAnim}],
-            opacity: opacityAnim,
-          },
-        ]}
-      />
-      <Animated.View
-        style={[
-          styles.loader,
-          {
-            transform: [{scale: scaleAnim}],
-            opacity: opacityAnim,
-            animationDelay: '1s',
-          },
-        ]}
-      />
+      {animations.map((anim, index) => (
+        <Animated.View
+          key={index}
+          style={[
+            styles.loader,
+            { transform: [{ scaleY: anim }] },
+          ]}
+        />
+      ))}
     </View>
   );
 };
@@ -58,17 +54,16 @@ const Loader = () => {
 const styles = StyleSheet.create({
   centeredContainer: {
     flex: 1,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'black',
   },
   loader: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: 'black',
-    position: 'absolute',
+    backgroundColor: '#DEF358',
+    marginHorizontal: 5,
+    width: 10,
+    height: 40,
   },
 });
 

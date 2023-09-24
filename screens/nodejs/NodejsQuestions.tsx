@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Animated, Easing } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
@@ -58,6 +58,8 @@ const NodejsQuestions = ({ navigation }: any) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [hideButton, setHideButton] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
+  const [animation, setAnimation] = useState(new Animated.Value(0));
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     fetchWithCache('https://imrn.dev/api/nodejs')
@@ -73,6 +75,18 @@ const NodejsQuestions = ({ navigation }: any) => {
         setIsLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+        fadeAnim.setValue(0);
+
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  }, [currentQuestionIndex, fadeAnim]);
+  
 
   const handleAnswer = (selectedAnswerIndex: number) => {
     setSelectedChoiceIndex(selectedAnswerIndex);
@@ -154,85 +168,88 @@ const NodejsQuestions = ({ navigation }: any) => {
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
+    <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+
     <View style={styles.container}>
-      <View style={styles.mainContent}>
-        <QuizQuestion question={currentQuestion.question} />
+        <View style={styles.mainContent}>
+          <QuizQuestion question={currentQuestion.question} />
 
-        {currentQuestion.choices.map((choice, index) => (
+          {currentQuestion.choices.map((choice, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.choiceButton,
+                selectedChoiceIndex === index &&
+                  !currentQuestion.answer.includes(index)
+                  ? styles.incorrectChoice
+                  : currentQuestion.answer.includes(index) && hasAnswered
+                    ? styles.correctChoice
+                    : null,
+              ]}
+              onPress={() => !hasAnswered && handleAnswer(index)}>
+              <Text style={styles.choiceText}>{choice}</Text>
+            </TouchableOpacity>
+          ))}
+
+          {showExplanation && (
+            <ScrollView
+              style={[styles.explanationContainer, { maxHeight: 150 }]} // Define a maxHeight
+            >
+              <Text style={styles.feedbackHeader}>
+                {feedbackMessage && feedbackMessage.split('\n')[0]}
+              </Text>
+              {feedbackMessage &&
+                feedbackMessage
+                  .split('\n')
+                  .slice(1)
+                  .map((line, index) => (
+                    <Text key={index} style={styles.feedbackDetail}>
+                      {line}
+                    </Text>
+                  ))}
+            </ScrollView>
+          )}
+
+          {showWarning && (
+            <Text style={styles.warningText}>Question not attempted</Text>
+          )}
+        </View>
+
+        {hasAnswered && !hideButton && (
           <TouchableOpacity
-            key={index}
-            style={[
-              styles.choiceButton,
-              selectedChoiceIndex === index &&
-                !currentQuestion.answer.includes(index)
-                ? styles.incorrectChoice
-                : currentQuestion.answer.includes(index) && hasAnswered
-                  ? styles.correctChoice
-                  : null,
-            ]}
-            onPress={() => !hasAnswered && handleAnswer(index)}>
-            <Text style={styles.choiceText}>{choice}</Text>
+            onPress={() => {
+              setShowExplanation(true);
+              setHideButton(true);
+            }}
+            style={styles.showExplanationButton}>
+            <Text style={styles.showExplanationText}>Show Explanation</Text>
           </TouchableOpacity>
-        ))}
-
-        {showExplanation && (
-          <ScrollView
-            style={[styles.explanationContainer, { maxHeight: 150 }]} // Define a maxHeight
-          >
-            <Text style={styles.feedbackHeader}>
-              {feedbackMessage && feedbackMessage.split('\n')[0]}
-            </Text>
-            {feedbackMessage &&
-              feedbackMessage
-                .split('\n')
-                .slice(1)
-                .map((line, index) => (
-                  <Text key={index} style={styles.feedbackDetail}>
-                    {line}
-                  </Text>
-                ))}
-          </ScrollView>
         )}
 
-        {showWarning && (
-          <Text style={styles.warningText}>Question not attempted</Text>
-        )}
+        {/* Footer */}
+        <View style={styles.footerContainer}>
+
+          <TouchableOpacity
+            style={styles.prevButton}
+            onPress={() => {
+              if (currentQuestionIndex > 0) {
+                setCurrentQuestionIndex(prev => prev - 1);
+                setHasAnswered(false);
+                setFeedbackMessage('');
+                setShowExplanation(false);
+                setHideButton(false);
+              }
+            }}>
+            <Text style={styles.prevText}>Previous</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.nextButton}
+            onPress={hasAnswered ? nextQuestion : undefined}>
+            <Text style={styles.nextText}>Next</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      {hasAnswered && !hideButton && (
-        <TouchableOpacity
-          onPress={() => {
-            setShowExplanation(true);
-            setHideButton(true);
-          }}
-          style={styles.showExplanationButton}>
-          <Text style={styles.showExplanationText}>Show Explanation</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Footer */}
-      <View style={styles.footerContainer}>
-
-        <TouchableOpacity
-          style={styles.prevButton}
-          onPress={() => {
-            if (currentQuestionIndex > 0) {
-              setCurrentQuestionIndex(prev => prev - 1);
-              setHasAnswered(false);
-              setFeedbackMessage('');
-              setShowExplanation(false);
-              setHideButton(false);
-            }
-          }}>
-          <Text style={styles.prevText}>Previous</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={hasAnswered ? nextQuestion : undefined}>
-          <Text style={styles.nextText}>Next</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </Animated.View>
   );
 };
 

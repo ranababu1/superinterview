@@ -29,7 +29,7 @@ function AppNavigator() {
             fontWeight: '100',
           },
         }}>
-        <Stack.Screen name="Interview Preparation" component={Home} />
+        <Stack.Screen name="  " component={Home} />
         <Stack.Screen
           name="JavascriptQuestions"
           component={JavascriptQuestions}

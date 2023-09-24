@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
@@ -16,21 +16,17 @@ const shuffleArray = (array: any[]) => {
 };
 
 const fetchWithCache = async url => {
-  // Try fetching data from cache
   const cachedData = await AsyncStorage.getItem(url);
   if (cachedData !== null) {
     const { data, timestamp } = JSON.parse(cachedData);
-    // Check if data is younger than 1 hour
     if (Date.now() - timestamp < ONE_HOUR) {
       return data;
     }
   }
 
-  // If cache is old or doesn't exist, fetch from API
   try {
     const response = await fetch(url);
     const result = await response.json();
-    // Store the new data in cache
     await AsyncStorage.setItem(
       url,
       JSON.stringify({
@@ -58,6 +54,7 @@ const Typescript = ({ navigation }: any) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [hideButton, setHideButton] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
+
 
   useEffect(() => {
     fetchWithCache('https://imrn.dev/api/typescript')
@@ -155,84 +152,84 @@ const Typescript = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.mainContent}>
-        <QuizQuestion question={currentQuestion.question} />
+        <View style={styles.mainContent}>
+          <QuizQuestion question={currentQuestion.question} />
 
-        {currentQuestion.choices.map((choice, index) => (
+          {currentQuestion.choices.map((choice, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.choiceButton,
+                selectedChoiceIndex === index &&
+                  !currentQuestion.answer.includes(index)
+                  ? styles.incorrectChoice
+                  : currentQuestion.answer.includes(index) && hasAnswered
+                    ? styles.correctChoice
+                    : null,
+              ]}
+              onPress={() => !hasAnswered && handleAnswer(index)}>
+              <Text style={styles.choiceText}>{choice}</Text>
+            </TouchableOpacity>
+          ))}
+
+          {showExplanation && (
+            <ScrollView
+              style={styles.explanationContainer} // Define a maxHeight
+            >
+              <Text style={styles.feedbackHeader}>
+                {feedbackMessage && feedbackMessage.split('\n')[0]}
+              </Text>
+              {feedbackMessage &&
+                feedbackMessage
+                  .split('\n')
+                  .slice(1)
+                  .map((line, index) => (
+                    <Text key={index} style={styles.feedbackDetail}>
+                      {line}
+                    </Text>
+                  ))}
+            </ScrollView>
+          )}
+
+          {showWarning && (
+            <Text style={styles.warningText}>Question not attempted</Text>
+          )}
+        </View>
+
+        {hasAnswered && !hideButton && (
           <TouchableOpacity
-            key={index}
-            style={[
-              styles.choiceButton,
-              selectedChoiceIndex === index &&
-                !currentQuestion.answer.includes(index)
-                ? styles.incorrectChoice
-                : currentQuestion.answer.includes(index) && hasAnswered
-                  ? styles.correctChoice
-                  : null,
-            ]}
-            onPress={() => !hasAnswered && handleAnswer(index)}>
-            <Text style={styles.choiceText}>{choice}</Text>
+            onPress={() => {
+              setShowExplanation(true);
+              setHideButton(true);
+            }}
+            style={styles.showExplanationButton}>
+            <Text style={styles.showExplanationText}>Show Explanation</Text>
           </TouchableOpacity>
-        ))}
-
-        {showExplanation && (
-          <ScrollView
-            style={[styles.explanationContainer, { maxHeight: 150 }]} // Define a maxHeight
-          >
-            <Text style={styles.feedbackHeader}>
-              {feedbackMessage && feedbackMessage.split('\n')[0]}
-            </Text>
-            {feedbackMessage &&
-              feedbackMessage
-                .split('\n')
-                .slice(1)
-                .map((line, index) => (
-                  <Text key={index} style={styles.feedbackDetail}>
-                    {line}
-                  </Text>
-                ))}
-          </ScrollView>
         )}
 
-        {showWarning && (
-          <Text style={styles.warningText}>Question not attempted</Text>
-        )}
+        {/* Footer */}
+        <View style={styles.footerContainer}>
+
+          <TouchableOpacity
+            style={styles.prevButton}
+            onPress={() => {
+              if (currentQuestionIndex > 0) {
+                setCurrentQuestionIndex(prev => prev - 1);
+                setHasAnswered(false);
+                setFeedbackMessage('');
+                setShowExplanation(false);
+                setHideButton(false);
+              }
+            }}>
+            <Text style={styles.prevText}>Previous</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.nextButton}
+            onPress={hasAnswered ? nextQuestion : undefined}>
+            <Text style={styles.nextText}>Next</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      {hasAnswered && !hideButton && (
-        <TouchableOpacity
-          onPress={() => {
-            setShowExplanation(true);
-            setHideButton(true);
-          }}
-          style={styles.showExplanationButton}>
-          <Text style={styles.showExplanationText}>Show Explanation</Text>
-        </TouchableOpacity>
-      )}
-
-      {/* Footer */}
-      <View style={styles.footerContainer}>
-
-        <TouchableOpacity
-          style={styles.prevButton}
-          onPress={() => {
-            if (currentQuestionIndex > 0) {
-              setCurrentQuestionIndex(prev => prev - 1);
-              setHasAnswered(false);
-              setFeedbackMessage('');
-              setShowExplanation(false);
-              setHideButton(false);
-            }
-          }}>
-          <Text style={styles.prevText}>Previous</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={hasAnswered ? nextQuestion : undefined}>
-          <Text style={styles.nextText}>Next</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
   );
 };
 
@@ -256,7 +253,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'left',
     paddingLeft: 10,
-    fontFamily: 'FiraCode-Light',
+    fontFamily: 'FiraCode-Medium',
   },
   correctChoice: {
     backgroundColor: '#2ecc71',
@@ -265,6 +262,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff7675',
   },
   showExplanationButton: {
+    fontFamily: 'Poppins-Regular',
     padding: 10,
     backgroundColor: '#3A3E45',
     borderRadius: 5,
@@ -281,19 +279,17 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 10,
     backgroundColor: '#353d36',
+    maxHeight: 120,
+    
   },
   feedbackHeader: {
-    fontSize: 18,
-    lineHeight: 24,
+    fontFamily: 'Poppins-Regular',
+
+    fontSize: 14,
+    lineHeight: 22,
     padding: 10,
     color: '#CECECE',
-  },
-  feedbackDetail: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 5,
-    color: 'white',
-    padding: 10,
+    
   },
   warningText: {
     color: 'red',
@@ -329,11 +325,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#353d36',
     padding: 5,
     borderRadius: 5,
-    minWidth: 100,
+    minWidth: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
   nextText: {
+    fontFamily: 'Poppins-Bold',
     color: '#DEF358',
     fontSize: 20,
   },
@@ -341,11 +338,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#353d36',
     padding: 5,
     borderRadius: 5,
-    minWidth: 100,
+    minWidth: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
   prevText: {
+    fontFamily: 'Poppins-Bold',
     color: '#DEF358',
     fontSize: 20,
   },

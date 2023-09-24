@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
@@ -16,17 +16,13 @@ const shuffleArray = (array: any[]) => {
 };
 
 const fetchWithCache = async url => {
-  // Try fetching data from cache
   const cachedData = await AsyncStorage.getItem(url);
   if (cachedData !== null) {
     const { data, timestamp } = JSON.parse(cachedData);
-    // Check if data is younger than 1 hour
     if (Date.now() - timestamp < ONE_HOUR) {
       return data;
     }
   }
-
-  // If cache is old or doesn't exist, fetch from API
   try {
     const response = await fetch(url);
     const result = await response.json();
@@ -156,84 +152,84 @@ const NodejsQuestions = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-        <View style={styles.mainContent}>
-          <QuizQuestion question={currentQuestion.question} />
+      <View style={styles.mainContent}>
+        <QuizQuestion question={currentQuestion.question} />
 
-          {currentQuestion.choices.map((choice, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.choiceButton,
-                selectedChoiceIndex === index &&
-                  !currentQuestion.answer.includes(index)
-                  ? styles.incorrectChoice
-                  : currentQuestion.answer.includes(index) && hasAnswered
-                    ? styles.correctChoice
-                    : null,
-              ]}
-              onPress={() => !hasAnswered && handleAnswer(index)}>
-              <Text style={styles.choiceText}>{choice}</Text>
-            </TouchableOpacity>
-          ))}
-
-          {showExplanation && (
-            <ScrollView
-              style={styles.explanationContainer} // Define a maxHeight
-            >
-              <Text style={styles.feedbackHeader}>
-                {feedbackMessage && feedbackMessage.split('\n')[0]}
-              </Text>
-              {feedbackMessage &&
-                feedbackMessage
-                  .split('\n')
-                  .slice(1)
-                  .map((line, index) => (
-                    <Text key={index} style={styles.feedbackDetail}>
-                      {line}
-                    </Text>
-                  ))}
-            </ScrollView>
-          )}
-
-          {showWarning && (
-            <Text style={styles.warningText}>Question not attempted</Text>
-          )}
-        </View>
-
-        {hasAnswered && !hideButton && (
+        {currentQuestion.choices.map((choice, index) => (
           <TouchableOpacity
-            onPress={() => {
-              setShowExplanation(true);
-              setHideButton(true);
-            }}
-            style={styles.showExplanationButton}>
-            <Text style={styles.showExplanationText}>Show Explanation</Text>
+            key={index}
+            style={[
+              styles.choiceButton,
+              selectedChoiceIndex === index &&
+                !currentQuestion.answer.includes(index)
+                ? styles.incorrectChoice
+                : currentQuestion.answer.includes(index) && hasAnswered
+                  ? styles.correctChoice
+                  : null,
+            ]}
+            onPress={() => !hasAnswered && handleAnswer(index)}>
+            <Text style={styles.choiceText}>{choice}</Text>
           </TouchableOpacity>
+        ))}
+
+        {showExplanation && (
+          <ScrollView
+            style={styles.explanationContainer} // Define a maxHeight
+          >
+            <Text style={styles.feedbackHeader}>
+              {feedbackMessage && feedbackMessage.split('\n')[0]}
+            </Text>
+            {feedbackMessage &&
+              feedbackMessage
+                .split('\n')
+                .slice(1)
+                .map((line, index) => (
+                  <Text key={index} style={styles.feedbackDetail}>
+                    {line}
+                  </Text>
+                ))}
+          </ScrollView>
         )}
 
-        {/* Footer */}
-        <View style={styles.footerContainer}>
-
-          <TouchableOpacity
-            style={styles.prevButton}
-            onPress={() => {
-              if (currentQuestionIndex > 0) {
-                setCurrentQuestionIndex(prev => prev - 1);
-                setHasAnswered(false);
-                setFeedbackMessage('');
-                setShowExplanation(false);
-                setHideButton(false);
-              }
-            }}>
-            <Text style={styles.prevText}>Previous</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={hasAnswered ? nextQuestion : undefined}>
-            <Text style={styles.nextText}>Next</Text>
-          </TouchableOpacity>
-        </View>
+        {showWarning && (
+          <Text style={styles.warningText}>Question not attempted</Text>
+        )}
       </View>
+
+      {hasAnswered && !hideButton && (
+        <TouchableOpacity
+          onPress={() => {
+            setShowExplanation(true);
+            setHideButton(true);
+          }}
+          style={styles.showExplanationButton}>
+          <Text style={styles.showExplanationText}>Show Explanation</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Footer */}
+      <View style={styles.footerContainer}>
+
+        <TouchableOpacity
+          style={styles.prevButton}
+          onPress={() => {
+            if (currentQuestionIndex > 0) {
+              setCurrentQuestionIndex(prev => prev - 1);
+              setHasAnswered(false);
+              setFeedbackMessage('');
+              setShowExplanation(false);
+              setHideButton(false);
+            }
+          }}>
+          <Text style={styles.prevText}>Previous</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.nextButton}
+          onPress={hasAnswered ? nextQuestion : undefined}>
+          <Text style={styles.nextText}>Next</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
@@ -284,7 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#353d36',
     maxHeight: 120,
-    
+
   },
   feedbackHeader: {
     fontFamily: 'Poppins-Regular',
@@ -293,7 +289,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     padding: 10,
     color: '#CECECE',
-    
+
   },
   warningText: {
     color: 'red',

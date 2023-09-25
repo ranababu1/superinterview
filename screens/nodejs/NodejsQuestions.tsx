@@ -100,7 +100,7 @@ const NodejsQuestions = ({ navigation }: any) => {
       setSelectedChoiceIndex(null);
       setHideButton(false);
     } else {
-      alert('Reactjs Questions completed');
+      alert('Quiz is complete. Results page is WIP');
       navigation.goBack();
     }
   };

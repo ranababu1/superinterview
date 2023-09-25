@@ -91,3 +91,4 @@ android/app/build/
 
 # Keystore
 *.keystore
+yarn.lock

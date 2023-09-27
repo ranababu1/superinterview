@@ -100,7 +100,7 @@ const Typescript = ({ navigation }: any) => {
       setSelectedChoiceIndex(null);
       setHideButton(false);
     } else {
-      alert('Quiz is complete. Results page is WIP');
+      alert('Quiz is complete. Results page is WIP.');
       navigation.goBack();
     }
   };
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#353d36',
     maxHeight: 120,
-    
+
   },
   feedbackHeader: {
     fontFamily: 'Poppins-Regular',
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     padding: 10,
     color: '#CECECE',
-    
+
   },
   warningText: {
     color: 'red',

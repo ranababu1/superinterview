@@ -112,7 +112,7 @@ const NodejsQuestions = ({ navigation }: any) => {
           onPress={() => setIsModalVisible(true)}
           style={styles.dropdownButton}
         >
-          <Text style={styles.dropdownButtonText}>Questions </Text>
+          <Text style={styles.dropdownButtonText}>Questions ▼</Text>
         </TouchableOpacity>
       ),
       headerRight: () => (

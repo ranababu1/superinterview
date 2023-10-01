@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Picker } from '@react-native-picker/picker';
 import Loader from '../../components/Loader';
 import QuizQuestion from '../../components/QuizQuestion';
+import QuestionPicker from '../../components/QuestionPicker';
 
 const ONE_HOUR = 3600000;
 
@@ -54,7 +54,7 @@ const NodejsQuestions = ({ navigation }: any) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [hideButton, setHideButton] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     fetchWithCache('https://imrn.dev/api/nodejs')
@@ -108,26 +108,12 @@ const NodejsQuestions = ({ navigation }: any) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <Picker
-          selectedValue={currentQuestionIndex}
-          style={styles.pickerContainer}
-          itemStyle={styles.pickerItem}
-          onValueChange={(itemValue, itemIndex) => {
-            setCurrentQuestionIndex(itemIndex);
-            setHasAnswered(false);
-            setFeedbackMessage('');
-            setShowExplanation(false);
-            setHideButton(false);
-          }}
+        <TouchableOpacity
+          onPress={() => setIsModalVisible(true)}
+          style={styles.dropdownButton}
         >
-          {questions.map((_, index) => (
-            <Picker.Item
-              key={index}
-              label={`Q ${index + 1}`}
-              value={index}
-            />
-          ))}
-        </Picker>
+          <Text style={styles.dropdownButtonText}>Questions </Text>
+        </TouchableOpacity>
       ),
       headerRight: () => (
         <View style={{ marginRight: 10 }}>
@@ -152,6 +138,27 @@ const NodejsQuestions = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <QuestionPicker
+            questionsCount={questions.length}
+            currentQuestionIndex={currentQuestionIndex}
+            onSelect={(index) => {
+              setCurrentQuestionIndex(index);
+              setHasAnswered(false);
+              setFeedbackMessage('');
+              setShowExplanation(false);
+              setHideButton(false);
+              setIsModalVisible(false);
+            }}
+          />
+        </View>
+      </Modal>
       <View style={styles.mainContent}>
         <QuizQuestion question={currentQuestion.question} />
 
@@ -238,6 +245,16 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#1f2720',
+  },
+  dropdownButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
   },
   mainContent: {
     flex: 1,

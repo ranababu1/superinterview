@@ -144,21 +144,28 @@ const NodejsQuestions = ({ navigation }: any) => {
         animationType="slide"
         onRequestClose={() => setIsModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <QuestionPicker
-            questionsCount={questions.length}
-            currentQuestionIndex={currentQuestionIndex}
-            onSelect={(index) => {
-              setCurrentQuestionIndex(index);
-              setHasAnswered(false);
-              setFeedbackMessage('');
-              setShowExplanation(false);
-              setHideButton(false);
-              setIsModalVisible(false);
-            }}
-          />
-        </View>
+        <TouchableOpacity
+          style={styles.modalContainer}
+          activeOpacity={1}
+          onPressOut={() => setIsModalVisible(false)}
+        >
+          <TouchableOpacity activeOpacity={1}>
+            <QuestionPicker
+              questionsCount={questions.length}
+              currentQuestionIndex={currentQuestionIndex}
+              onSelect={(index) => {
+                setCurrentQuestionIndex(index);
+                setHasAnswered(false);
+                setFeedbackMessage('');
+                setShowExplanation(false);
+                setHideButton(false);
+                setIsModalVisible(false);
+              }}
+            />
+          </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
+
       <View style={styles.mainContent}>
         <QuizQuestion question={currentQuestion.question} />
 
@@ -254,7 +261,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)', // Semi-transparent background
+    backgroundColor: '#1f2720', // Semi-transparent background
   },
   mainContent: {
     flex: 1,

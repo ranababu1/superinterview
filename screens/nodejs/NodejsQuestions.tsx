@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Animated, { FlipInEasyX, FlipOutEasyX, BounceInRight, BounceInLeft } from 'react-native-reanimated';
 import Loader from '../../components/Loader';
 import QuizQuestion from '../../components/QuizQuestion';
 import QuestionPicker from '../../components/QuestionPicker';
@@ -55,6 +56,7 @@ const NodejsQuestions = ({ navigation }: any) => {
   const [hideButton, setHideButton] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   useEffect(() => {
     fetchWithCache('https://imrn.dev/api/nodejs')
@@ -167,24 +169,35 @@ const NodejsQuestions = ({ navigation }: any) => {
       </Modal>
 
       <View style={styles.mainContent}>
-        <QuizQuestion question={currentQuestion.question} />
-
+        <Animated.View
+          key={currentQuestionIndex}
+          entering={FlipInEasyX.duration(500)}
+          exiting={FlipOutEasyX.duration(1000)}
+        >
+          <QuizQuestion question={currentQuestion.question} />
+        </Animated.View>
         {currentQuestion.choices.map((choice, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.choiceButton,
-              selectedChoiceIndex === index &&
-                !currentQuestion.answer.includes(index)
-                ? styles.incorrectChoice
-                : currentQuestion.answer.includes(index) && hasAnswered
-                  ? styles.correctChoice
-                  : null,
-            ]}
-            onPress={() => !hasAnswered && handleAnswer(index)}>
-            <Text style={styles.choiceText}>{choice}</Text>
-          </TouchableOpacity>
+          <Animated.View
+            entering={FlipInEasyX.duration(500).delay(index * 200)}
+            key={`${currentQuestionIndex}-${index}`}
+          >
+            <TouchableOpacity
+              style={[
+                styles.choiceButton,
+                selectedChoiceIndex === index &&
+                  !currentQuestion.answer.includes(index)
+                  ? styles.incorrectChoice
+                  : currentQuestion.answer.includes(index) && hasAnswered
+                    ? styles.correctChoice
+                    : null,
+              ]}
+              onPress={() => !hasAnswered && handleAnswer(index)}
+            >
+              <Text style={styles.choiceText}>{choice}</Text>
+            </TouchableOpacity>
+          </Animated.View>
         ))}
+
 
         {showExplanation && (
           <ScrollView
@@ -222,28 +235,32 @@ const NodejsQuestions = ({ navigation }: any) => {
       )}
 
       {/* Footer */}
-      <View style={styles.footerContainer}>
-
-        <TouchableOpacity
-          style={styles.prevButton}
-          onPress={() => {
-            if (currentQuestionIndex > 0) {
-              setCurrentQuestionIndex(prev => prev - 1);
-              setHasAnswered(false);
-              setFeedbackMessage('');
-              setShowExplanation(false);
-              setHideButton(false);
-            }
-          }}>
-          <Text style={styles.prevText}>Previous</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={hasAnswered ? nextQuestion : undefined}>
-          <Text style={styles.nextText}>Next</Text>
-        </TouchableOpacity>
+      <View style={styles.footerContainer} key={currentQuestionIndex}>
+        <Animated.View entering={BounceInLeft.duration(500)}>
+          <TouchableOpacity
+            style={styles.prevButton}
+            onPress={() => {
+              if (currentQuestionIndex > 0) {
+                setCurrentQuestionIndex(prev => prev - 1);
+                setHasAnswered(false);
+                setFeedbackMessage('');
+                setShowExplanation(false);
+                setHideButton(false);
+              }
+            }}>
+            <Text style={styles.prevText}>Previous</Text>
+          </TouchableOpacity>
+        </Animated.View>
+        <Animated.View entering={BounceInRight.duration(500)}>
+          <TouchableOpacity
+            style={styles.nextButton}
+            onPress={hasAnswered ? nextQuestion : undefined}>
+            <Text style={styles.nextText}>Next</Text>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
     </View>
+
   );
 };
 

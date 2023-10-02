@@ -1,24 +1,23 @@
 import React from 'react';
 import {View, StyleSheet, Image, Text, TouchableOpacity} from 'react-native';
 import FastImage from 'react-native-fast-image';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const heroGif = require('../assets/media/hero.gif');
 
 const Home = ({navigation}: any) => {
+
   return (
     <View style={styles.container}>
-      {/* <Image source={heroGif} style={styles.image} /> */}
       <FastImage
         source={heroGif}
         style={[styles.image, {borderRadius: 10}]}
         resizeMode={FastImage.resizeMode.contain}
       />
-
       <TouchableOpacity
         style={styles.buttonContainer}
         onPress={() => navigation.navigate('JavascriptOptions')}>
         <Text style={styles.title}>Javascript</Text>
       </TouchableOpacity>
+
 
       <TouchableOpacity
         style={styles.buttonContainer}

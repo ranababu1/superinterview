@@ -5,7 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Home from '../screens/Home';
 import ReactjsQuestions from '../screens/reactjs/ReactjsQuestions';
 import NodejsQuestions from '../screens/nodejs/NodejsQuestions';
-import Typescript from '../screens/typescript/TypescriptQuestions';
+import TypescriptQuestions from '../screens/typescript/TypescriptQuestions';
 import JavascriptOptions from '../screens/js/JavascriptOptions';
 import JavascriptAdvanced from '../screens/js/JavascriptAdvanced';
 import JavascriptQuestions from '../screens/js/JavascriptQuestions';
@@ -46,8 +46,8 @@ function AppNavigator() {
           options={{title: ''}}
         />
         <Stack.Screen
-          name="Typescript"
-          component={Typescript}
+          name="TypescriptQuestions"
+          component={TypescriptQuestions}
           options={{title: ''}}
         />
         <Stack.Screen

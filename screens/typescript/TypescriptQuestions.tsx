@@ -41,7 +41,7 @@ const fetchWithCache = async url => {
   }
 };
 
-const Typescript = ({ navigation }: any) => {
+const TypescriptQuestions = ({ navigation }: any) => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -351,4 +351,4 @@ const styles = StyleSheet.create({
 
 
 
-export default Typescript;
+export default TypescriptQuestions;

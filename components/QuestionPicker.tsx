@@ -16,10 +16,12 @@ const QuestionPicker: React.FC<QuestionPickerProps> = ({
 
     return (
         <>
-        <Text style={styles.modalHeader}>Review questions</Text>
-            {/* <TouchableOpacity style={styles.closeButton}> 
-                <Text style={styles.closeButtonText}>X</Text>
-            </TouchableOpacity>*/}
+            <View style={styles.headerContainer}>
+                <Text style={styles.modalHeader}>Review questions</Text>
+                <TouchableOpacity style={styles.closeButton} onPress={() => onSelect(currentQuestionIndex)}>
+                    <Text style={styles.closeButtonText}>X</Text>
+                </TouchableOpacity>
+            </View>
             <FlatList
                 data={data}
                 numColumns={5}
@@ -36,18 +38,21 @@ const QuestionPicker: React.FC<QuestionPickerProps> = ({
                     </TouchableOpacity>
                 )}
             />
-            </>
+        </>
     );
 };
 
 const styles = StyleSheet.create({
-
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        marginBottom: 10,
+    },
     modalHeader: {
         color: 'white',
         fontSize: 20,
-        padding: 10,
-        textAlign: 'left',
-        marginBottom: 10,
     },
     item: {
         padding: 25,
@@ -55,9 +60,6 @@ const styles = StyleSheet.create({
         margin: 2,
         minWidth: 70,
         backgroundColor: '#353d36',
-    },
-    inactiveItem: {
-        backgroundColor: 'grey',
     },
     selectedItem: {
         backgroundColor: '#2ecc71',
@@ -72,8 +74,7 @@ const styles = StyleSheet.create({
     },
     closeButtonText: {
         fontSize: 20,
-        fontWeight: 'bold',
-        color: 'white',
+        color: '#ff7675',
     },
 });
 

@@ -59,7 +59,7 @@ const ReactjsQuestions = ({ navigation }: any) => {
 
 
   useEffect(() => {
-    fetchWithCache('https://imrn.dev/api/reactjs')
+    fetchWithCache('https://imrn.dev/api/csharp')
       .then(data => {
         // console.log('Received data:', data);
         const shuffledData = shuffleArray(data);
@@ -102,8 +102,11 @@ const ReactjsQuestions = ({ navigation }: any) => {
       setSelectedChoiceIndex(null);
       setHideButton(false);
     } else {
-      alert('Quiz is complete. Results page is WIP');
-      navigation.goBack();
+      navigation.navigate('Results', {
+        score: correctResponses,
+        totalQuestions: questions.length,
+        quizName: 'ReactjsQuestions',
+      });
     }
   };
 

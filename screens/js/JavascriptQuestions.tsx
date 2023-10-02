@@ -102,8 +102,11 @@ const JavascriptQuestions = ({ navigation }: any) => {
       setSelectedChoiceIndex(null);
       setHideButton(false);
     } else {
-      alert('Quiz is complete. Results page is WIP');
-      navigation.goBack();
+      navigation.navigate('Results', {
+        score: correctResponses,
+        totalQuestions: questions.length,
+        quizName: 'JavascriptQuestions',
+      });
     }
   };
 

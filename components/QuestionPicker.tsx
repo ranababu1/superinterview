@@ -31,8 +31,14 @@ const QuestionPicker: React.FC<QuestionPickerProps> = ({
                         style={[
                             styles.item,
                             currentQuestionIndex === item && styles.selectedItem,
+                            item > currentQuestionIndex && styles.disabledItem
                         ]}
-                        onPress={() => onSelect(item)}
+                        onPress={() => {
+                            if (item <= currentQuestionIndex) {
+                                onSelect(item);
+                            }
+                        }}
+                        disabled={item > currentQuestionIndex}
                     >
                         <Text style={styles.itemText}>{item + 1}</Text>
                     </TouchableOpacity>
@@ -63,6 +69,9 @@ const styles = StyleSheet.create({
     },
     selectedItem: {
         backgroundColor: '#2ecc71',
+    },
+    disabledItem: {
+        opacity: 0.5,
     },
     itemText: {
         color: 'white',

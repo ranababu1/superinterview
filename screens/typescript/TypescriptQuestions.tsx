@@ -42,7 +42,7 @@ const fetchWithCache = async url => {
   }
 };
 
-const NodejsQuestions = ({ navigation }: any) => {
+const TypescriptQuestions = ({ navigation }: any) => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -102,8 +102,11 @@ const NodejsQuestions = ({ navigation }: any) => {
       setSelectedChoiceIndex(null);
       setHideButton(false);
     } else {
-      alert('Quiz is complete. Results page is WIP');
-      navigation.goBack();
+      navigation.navigate('Results', {
+        score: correctResponses,
+        totalQuestions: questions.length,
+        quizName: 'TypescriptQuestions',
+      });
     }
   };
 
@@ -393,4 +396,4 @@ const styles = StyleSheet.create({
 
 
 
-export default NodejsQuestions;
+export default TypescriptQuestions;

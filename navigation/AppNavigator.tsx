@@ -9,7 +9,11 @@ import TypescriptQuestions from '../screens/typescript/TypescriptQuestions';
 import JavascriptOptions from '../screens/js/JavascriptOptions';
 import JavascriptAdvanced from '../screens/js/JavascriptAdvanced';
 import JavascriptQuestions from '../screens/js/JavascriptQuestions';
+import Results from '../components/Results';
 
+export type RootStackParamList = {
+  Results: { score: number; totalQuestions: number }; // Define parameter types for Results Screen
+};
 
 const Stack = createStackNavigator();
 
@@ -29,7 +33,7 @@ function AppNavigator() {
             fontWeight: '100',
           },
         }}>
-        <Stack.Screen name="  " component={Home} />
+        <Stack.Screen name="Home" component={Home} options={{title: ''}}/>
         <Stack.Screen
           name="JavascriptQuestions"
           component={JavascriptQuestions}
@@ -62,6 +66,9 @@ function AppNavigator() {
           component={JavascriptAdvanced}
           options={{title: ''}}
         />
+
+<Stack.Screen name="Results" component={Results} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

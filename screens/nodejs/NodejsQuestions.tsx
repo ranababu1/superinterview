@@ -59,7 +59,7 @@ const NodejsQuestions = ({ navigation }: any) => {
 
 
   useEffect(() => {
-    fetchWithCache('https://imrn.dev/api/nodejs')
+    fetchWithCache('https://imrn.dev/api/csharp')
       .then(data => {
         // console.log('Received data:', data);
         const shuffledData = shuffleArray(data);
@@ -102,8 +102,11 @@ const NodejsQuestions = ({ navigation }: any) => {
       setSelectedChoiceIndex(null);
       setHideButton(false);
     } else {
-      alert('Quiz is complete. Results page is WIP');
-      navigation.goBack();
+      navigation.navigate('Results', {
+        score: correctResponses,
+        totalQuestions: questions.length,
+        quizName: 'NodejsQuestions',
+      });
     }
   };
 
@@ -342,6 +345,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   button: {
     backgroundColor: '#353d36',

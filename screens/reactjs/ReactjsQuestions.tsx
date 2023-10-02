@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Picker } from '@react-native-picker/picker';
+import Animated, { FlipInEasyX, FlipOutEasyX, BounceInRight, BounceInLeft } from 'react-native-reanimated';
 import Loader from '../../components/Loader';
 import QuizQuestion from '../../components/QuizQuestion';
+import QuestionPicker from '../../components/QuestionPicker';
 
 const ONE_HOUR = 3600000;
 
@@ -54,6 +55,7 @@ const ReactjsQuestions = ({ navigation }: any) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [hideButton, setHideButton] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
 
   useEffect(() => {
@@ -108,26 +110,12 @@ const ReactjsQuestions = ({ navigation }: any) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <Picker
-          selectedValue={currentQuestionIndex}
-          style={styles.pickerContainer}
-          itemStyle={styles.pickerItem}
-          onValueChange={(itemValue, itemIndex) => {
-            setCurrentQuestionIndex(itemIndex);
-            setHasAnswered(false);
-            setFeedbackMessage('');
-            setShowExplanation(false);
-            setHideButton(false);
-          }}
+        <TouchableOpacity
+          onPress={() => setIsModalVisible(true)}
+          style={styles.dropdownButton}
         >
-          {questions.map((_, index) => (
-            <Picker.Item
-              key={index}
-              label={`Q ${index + 1}`}
-              value={index}
-            />
-          ))}
-        </Picker>
+          <Text style={styles.dropdownButtonText}>Questions ▼</Text>
+        </TouchableOpacity>
       ),
       headerRight: () => (
         <View style={{ marginRight: 10 }}>
@@ -152,12 +140,48 @@ const ReactjsQuestions = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
-        <View style={styles.mainContent}>
-          <QuizQuestion question={currentQuestion.question} />
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={styles.modalContainer}
+          activeOpacity={1}
+          onPressOut={() => setIsModalVisible(false)}
+        >
+          <TouchableOpacity activeOpacity={1}>
+            <QuestionPicker
+              questionsCount={questions.length}
+              currentQuestionIndex={currentQuestionIndex}
+              onSelect={(index) => {
+                setCurrentQuestionIndex(index);
+                setHasAnswered(false);
+                setFeedbackMessage('');
+                setShowExplanation(false);
+                setHideButton(false);
+                setIsModalVisible(false);
+              }}
+            />
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
 
-          {currentQuestion.choices.map((choice, index) => (
+      <View style={styles.mainContent}>
+        <Animated.View
+          key={currentQuestionIndex}
+          entering={FlipInEasyX.duration(500)}
+          exiting={FlipOutEasyX.duration(1000)}
+        >
+          <QuizQuestion question={currentQuestion.question} />
+        </Animated.View>
+        {currentQuestion.choices.map((choice, index) => (
+          <Animated.View
+            entering={FlipInEasyX.duration(500).delay(index * 200)}
+            key={`${currentQuestionIndex}-${index}`}
+          >
             <TouchableOpacity
-              key={index}
               style={[
                 styles.choiceButton,
                 selectedChoiceIndex === index &&
@@ -167,49 +191,52 @@ const ReactjsQuestions = ({ navigation }: any) => {
                     ? styles.correctChoice
                     : null,
               ]}
-              onPress={() => !hasAnswered && handleAnswer(index)}>
+              onPress={() => !hasAnswered && handleAnswer(index)}
+            >
               <Text style={styles.choiceText}>{choice}</Text>
             </TouchableOpacity>
-          ))}
+          </Animated.View>
+        ))}
 
-          {showExplanation && (
-            <ScrollView
-              style={styles.explanationContainer} // Define a maxHeight
-            >
-              <Text style={styles.feedbackHeader}>
-                {feedbackMessage && feedbackMessage.split('\n')[0]}
-              </Text>
-              {feedbackMessage &&
-                feedbackMessage
-                  .split('\n')
-                  .slice(1)
-                  .map((line, index) => (
-                    <Text key={index} style={styles.feedbackDetail}>
-                      {line}
-                    </Text>
-                  ))}
-            </ScrollView>
-          )}
 
-          {showWarning && (
-            <Text style={styles.warningText}>Question not attempted</Text>
-          )}
-        </View>
-
-        {hasAnswered && !hideButton && (
-          <TouchableOpacity
-            onPress={() => {
-              setShowExplanation(true);
-              setHideButton(true);
-            }}
-            style={styles.showExplanationButton}>
-            <Text style={styles.showExplanationText}>Show Explanation</Text>
-          </TouchableOpacity>
+        {showExplanation && (
+          <ScrollView
+            style={styles.explanationContainer} // Define a maxHeight
+          >
+            <Text style={styles.feedbackHeader}>
+              {feedbackMessage && feedbackMessage.split('\n')[0]}
+            </Text>
+            {feedbackMessage &&
+              feedbackMessage
+                .split('\n')
+                .slice(1)
+                .map((line, index) => (
+                  <Text key={index} style={styles.feedbackDetail}>
+                    {line}
+                  </Text>
+                ))}
+          </ScrollView>
         )}
 
-        {/* Footer */}
-        <View style={styles.footerContainer}>
+        {showWarning && (
+          <Text style={styles.warningText}>Question not attempted</Text>
+        )}
+      </View>
 
+      {hasAnswered && !hideButton && (
+        <TouchableOpacity
+          onPress={() => {
+            setShowExplanation(true);
+            setHideButton(true);
+          }}
+          style={styles.showExplanationButton}>
+          <Text style={styles.showExplanationText}>Show Explanation</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Footer */}
+      <View style={styles.footerContainer} key={currentQuestionIndex}>
+        <Animated.View entering={BounceInLeft.duration(500)}>
           <TouchableOpacity
             style={styles.prevButton}
             onPress={() => {
@@ -223,13 +250,17 @@ const ReactjsQuestions = ({ navigation }: any) => {
             }}>
             <Text style={styles.prevText}>Previous</Text>
           </TouchableOpacity>
+        </Animated.View>
+        <Animated.View entering={BounceInRight.duration(500)}>
           <TouchableOpacity
             style={styles.nextButton}
             onPress={hasAnswered ? nextQuestion : undefined}>
             <Text style={styles.nextText}>Next</Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       </View>
+    </View>
+
   );
 };
 
@@ -238,6 +269,16 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#1f2720',
+  },
+  dropdownButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#1f2720', // Semi-transparent background
   },
   mainContent: {
     flex: 1,
@@ -280,7 +321,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#353d36',
     maxHeight: 120,
-    
+
   },
   feedbackHeader: {
     fontFamily: 'Poppins-Regular',
@@ -289,7 +330,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     padding: 10,
     color: '#CECECE',
-    
+
   },
   warningText: {
     color: 'red',
@@ -301,6 +342,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   button: {
     backgroundColor: '#353d36',

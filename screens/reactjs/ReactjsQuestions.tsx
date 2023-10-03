@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Animated, { FlipInEasyX, FlipOutEasyX, BounceInRight, BounceInLeft } from 'react-native-reanimated';
 import Loader from '../../components/Loader';
@@ -57,9 +58,30 @@ const ReactjsQuestions = ({ navigation }: any) => {
   const [showWarning, setShowWarning] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      // This code will run every time the screen is focused
+
+      // Only reset the quiz state, not the fetched questions
+      setCurrentQuestionIndex(0);
+      setHasAnswered(false);
+      setFeedbackMessage('');
+      setCorrectResponses(0);
+      setSelectedChoiceIndex(null);
+      setShowExplanation(false);
+      setHideButton(false);
+      setShowWarning(false);
+
+      // Cleanup function
+      return () => {
+        // This code will run when the screen goes out of focus
+        // we can do any necessary cleanup here if needed
+      };
+    }, [])
+  );
 
   useEffect(() => {
-    fetchWithCache('https://imrn.dev/api/csharp')
+    fetchWithCache('https://imrn.dev/api/reactjs')
       .then(data => {
         // console.log('Received data:', data);
         const shuffledData = shuffleArray(data);

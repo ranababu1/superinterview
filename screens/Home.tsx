@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 
 const heroGif = require('../assets/media/hero.gif');
 const buttons = ['Javascript', 'Reactjs', 'Nodejs', 'Typescript'];

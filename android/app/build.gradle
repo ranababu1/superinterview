@@ -1,4 +1,4 @@
-﻿apply plugin: "com.android.application"
+apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
@@ -73,13 +73,29 @@ def enableProguardInReleaseBuilds = false
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 /**
- * Loads the release signing configuration from android/keystore.properties (git-ignored).
- * If that file is missing, release builds fall back to the debug keystore.
+ * Mandatory release signing configuration.
  */
 def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+if (!keystorePropertiesFile.exists()) {
+    throw new GradleException("Missing android/keystore.properties. Release signing is mandatory.")
+}
+
 def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+keystorePropertiesFile.withInputStream { stream ->
+    keystoreProperties.load(stream)
+}
+
+["storeFile", "storePassword", "keyAlias", "keyPassword"].each { propertyName ->
+    if (!keystoreProperties.getProperty(propertyName)?.trim()) {
+        throw new GradleException("Missing '${propertyName}' in android/keystore.properties.")
+    }
+}
+
+def uploadKeystoreFile = file(keystoreProperties.getProperty("storeFile"))
+
+if (!uploadKeystoreFile.exists()) {
+    throw new GradleException("Upload keystore not found: ${uploadKeystoreFile.absolutePath}")
 }
 
 android {
@@ -103,12 +119,10 @@ android {
             keyPassword 'android'
         }
         release {
-            if (keystorePropertiesFile.exists()) {
-                storeFile file(keystoreProperties['storeFile'])
-                storePassword keystoreProperties['storePassword']
-                keyAlias keystoreProperties['keyAlias']
-                keyPassword keystoreProperties['keyPassword']
-            }
+            storeFile uploadKeystoreFile
+            storePassword keystoreProperties.getProperty("storePassword")
+            keyAlias keystoreProperties.getProperty("keyAlias")
+            keyPassword keystoreProperties.getProperty("keyPassword")
         }
     }
     buildTypes {
@@ -116,13 +130,7 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            if (keystorePropertiesFile.exists()) {
-                signingConfig signingConfigs.release
-            } else {
-                // Caution! In production, you need to generate your own keystore file.
-                // see https://reactnative.dev/docs/signed-apk-android.
-                signingConfig signingConfigs.debug
-            }
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }

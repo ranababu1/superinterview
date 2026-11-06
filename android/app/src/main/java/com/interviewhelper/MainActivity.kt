@@ -1,4 +1,4 @@
-package com.interviewhelper
+﻿package com.advancedjavascript18
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

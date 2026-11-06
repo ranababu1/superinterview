@@ -1,4 +1,4 @@
-package com.interviewhelper
+﻿package com.advancedjavascript18
 
 import android.app.Application
 import com.facebook.react.PackageList

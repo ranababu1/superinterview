@@ -108,7 +108,7 @@ android {
         applicationId "com.advancedjavascript18"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
+        versionCode 3
         versionName "2.0"
     }
     signingConfigs {
